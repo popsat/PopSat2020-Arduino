@@ -1,12 +1,13 @@
-/* KODEA v1
+/* KODEA v1.1
  *  
  *  parentesi artean frogatu gabe
+ *  kortxete implementatu gabe
  *  normal, frogatua
  *  
  *  2bmp batera martxan
  *  apc bidaltzen
- *  (sd gordetzen)
- *  
+ *  sd gordetzen
+ *  [O2 sensor]
  * 
  */
 #include <Adafruit_Sensor.h>
@@ -44,8 +45,6 @@ void setup() {
     Serial.println(F("Could not find a valid BMP280(2) sensor, check wiring!"));
     while (1);
   }// Inicia el sensor
-
-  // see if the card is present and can be initialized:
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() {
@@ -57,17 +56,17 @@ void loop() {
   altitudin = bmp1.readAltitude (1015); // Ajustar con el valor local
   //stringOne += F("Presioa(IN): ");
   stringOne += String(presionin, 2);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(temperaturain, 2);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(altitudin, 2);
   denboraz = denbora;
   denbora = millis();
   denbora = denbora/1000;
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(denbora, 2);
   abiadurain = (altitudin - altuerainz)/(denbora - denboraz);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(abiadurain, 2);
   
   //BMP OUT
@@ -76,22 +75,22 @@ void loop() {
   temperaturaout = bmp2.readTemperature();
   altueraoutz = altitudout;
   altitudout = bmp2.readAltitude (1015); // Ajustar con el valor local
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(presionout, 2);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(temperaturaout, 2);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(altitudout, 2);
   denboraz = denbora;
   denbora = millis();
   denbora = denbora/1000;
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(denbora, 2);
   abiaduraout = (altitudout - altueraoutz)/(denbora - denboraz);
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(abiaduraout, 2);
   i=i+1;
-  stringOne += F(", ");
+  stringOne += F(",");
   stringOne += String(i, 2);
   sd.listen();
   sd.println(stringOne);
