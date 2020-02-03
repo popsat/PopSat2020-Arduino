@@ -8,6 +8,8 @@
  *  apc bidaltzen
  *  sd gordetzen
  *  [O2 sensor]
+ *  
+ *  presin, tempin, altin, denb1, abia1, presout, tempout, altout, denb2, abia2, ident
  * 
  */
 #include <Adafruit_Sensor.h>
