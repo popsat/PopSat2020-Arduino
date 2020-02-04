@@ -1,4 +1,4 @@
-/* KODEA v1.1
+/* KODEA v2
  *  
  *  
  *  parentesi artean frogatu gabe
@@ -8,9 +8,9 @@
  *  2bmp batera martxan
  *  apc bidaltzen
  *  sd gordetzen
- *  [O2 sensor]
+ *  (O2 sensor)
  *  
- *  presin, tempin, altin, denb1, abia1, presout, tempout, altout, denb2, abia2, ident
+ *  presin, tempin, altin, denb1, abia1, presout, tempout, altout, denb2, abia2, oxygenV, oxygenC, ident
  * 
  */
 #include <Adafruit_Sensor.h>
@@ -33,6 +33,8 @@ float altitudout; // Almacena la altitud (m) (se puede usar variable float)
 float altueraoutz = 0;
 float abiaduraout = 0;
 float denboraz = 0;
+float Vout =0; //Oxygen Sensor Value
+int calibrateO2 = 93;
 SoftwareSerial sd(9, 10); // RX, TX
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
@@ -48,11 +50,17 @@ void setup() {
     Serial.println(F("Could not find a valid BMP280(2) sensor, check wiring!"));
     while (1);
   }// Inicia el sensor
+  calibrateO2 = analogRead(Vout); //Oxygen Sensor Calibrate
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() {
-  // put your main code here, to run repeatedly:
+  
+  //CREATE A STRING:
+  
   String stringOne;
+
+  //BMP IN READ
+  
   presionin = bmp1.readPressure() / 100; //Presioa Irakurri
   temperaturain = bmp1.readTemperature();
   altuerainz = altitudin;
@@ -92,9 +100,23 @@ void loop() {
   abiaduraout = (altitudout - altueraoutz)/(denbora - denboraz);
   stringOne += F(",");
   stringOne += String(abiaduraout, 2);
+  
+  //OXYGEN
+
+  Vout = analogRead(A0); //Oxygen read
+  stringOne += String(Vout, 2); //Oxygen V print
+  Vout = map(Vout, 0, calibrateO2, 0, 208); //Map to calibrated value
+  Vout = Vout/10; //Oxygen to decimals
+  stringOne += String(Vout, 2); //Oxygen mapped print
+  
+  //I VALUE
+  
   i=i+1;
   stringOne += F(",");
   stringOne += String(i, 2);
+
+  //STORAGE AND SEND
+  
   sd.listen();
   sd.println(stringOne);
   Serial.println(stringOne);
