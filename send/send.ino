@@ -1,5 +1,6 @@
 /* KODEA v1.1
  *  
+ *  
  *  parentesi artean frogatu gabe
  *  kortxete implementatu gabe
  *  normal, frogatua
