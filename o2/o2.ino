@@ -1,7 +1,3 @@
-// Grove - Gas Sensor(O2) test code
-// Note:
-// 1. It need about about 5-10 minutes to preheat the sensor
-// 2. modify VRefer if needed
     float Vout =0;
     int calibrateO2 = 93;        //////////////////////////////////////////////change the value and the line 6 lines lower for manual calibration
 void setup() 
