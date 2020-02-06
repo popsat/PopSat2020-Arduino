@@ -103,6 +103,7 @@ void loop() {
   
   //OXYGEN
 
+  stringOne += F(",");
   Vout = analogRead(A0); //Oxygen read
   stringOne += String(Vout, 2); //Oxygen V print
   Vout = map(Vout, 0, calibrateO2, 0, 208); //Map to calibrated value
