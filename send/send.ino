@@ -1,4 +1,4 @@
-/* KODEA v2.1
+/* KODEA v3
  *  
  *  
  *  parentesi artean frogatu gabe
@@ -8,7 +8,7 @@
  *  2bmp batera martxan
  *  apc bidaltzen
  *  sd gordetzen
- *  (O2 sensor)
+ *  O2 sensor
  *  
  *  Katea:
  *  presin, tempin, altin, denb1, abia1, presout, tempout, altout, denb2, abia2, oxygenV, oxygenC, ident
@@ -106,6 +106,7 @@ void loop() {
 
   Vout = analogRead(A0); //Oxigenoa irakurri
   stringOne += String(Vout, 2); //Oxigenoaren sentsorearen sarrera bidali
+  stringOne += F(",");
   Vout = map(Vout, 0, calibrateO2, 0, 208); //Kalibratutako baliora mapeatu
   Vout = Vout/10; //Oxigenoa dezimaletara
   stringOne += String(Vout, 2); //Oxigenoa bidali
