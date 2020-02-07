@@ -1,4 +1,4 @@
-/* KODEA v2
+/* KODEA v2.1
  *  
  *  
  *  parentesi artean frogatu gabe
@@ -10,113 +10,113 @@
  *  sd gordetzen
  *  (O2 sensor)
  *  
+ *  Katea:
  *  presin, tempin, altin, denb1, abia1, presout, tempout, altout, denb2, abia2, oxygenV, oxygenC, ident
  * 
  */
-#include <Adafruit_Sensor.h>
-#include "Adafruit_BMP280.h"
-#include <SoftwareSerial.h>
-#include <SPI.h>
-#include <Wire.h>
-float i = 0;
-float denbora = 0;
-Adafruit_BMP280 bmp1; // I2C (A4(SDA), A5(SCL))
-Adafruit_BMP280 bmp2; //I2C (A4(SDA), A5(SCL))
-float presionin; // Almacena la presion atmosferica (Pa)
-float temperaturain; // Almacena la temperatura (oC)
-float altitudin; // Almacena la altitud (m) (se puede usar variable float)
-float altuerainz = 0;
-float abiadurain = 0;
-float presionout; // Almacena la presion atmosferica (Pa)
-float temperaturaout; // Almacena la temperatura (oC)
-float altitudout; // Almacena la altitud (m) (se puede usar variable float)
-float altueraoutz = 0;
-float abiaduraout = 0;
-float denboraz = 0;
-float Vout =0; //Oxygen Sensor Value
-int calibrateO2 = 93;
-SoftwareSerial sd(9, 10); // RX, TX
+#include <Adafruit_Sensor.h>  //Adafruit_Sensor.h libreria gehitu
+#include "Adafruit_BMP280.h"  //Adafruit_BMP280.h libreria gehitu
+#include <SoftwareSerial.h>   //SoftwareSerial libreria gehitu
+#include <SPI.h>              //SPI libreria gehitu
+#include <Wire.h>             //Wire libreria gehitu
+Adafruit_BMP280 bmp1;         //I2C (A4(SDA), A5(SCL))
+Adafruit_BMP280 bmp2;         //I2C (A4(SDA), A5(SCL))
+float i = 0;                  //i float gehitu, identifikadore bezala erabiltzeko
+float denbora = 0;            //Denbora float gehitu, arduino piztuta dagoen denbora kalkulatzeko
+float denboraz = 0;           //Denbora zaharra gorde, abiadura eta denbora diferentzia kalkulatzeko
+float presionin;              //Barruko presio atmosferikoa gordetzeko float gehitu
+float temperaturain;          //Barruko tenperatura gordetzeko float gehitu
+float altitudin;              //Barruko altuera gordetzeko float gehitu
+float altuerainz = 0;         //Barruko altuera zaharra gordetzeko float gehitu. Honekin, altuera diferentzia kalkulatu daiteke
+float abiadurain = 0;         //Barruko abiadura gordetzeko float gehitu
+float presionout;             //Kanpoko presio atmosferikoa gordetzeko float gehitu
+float temperaturaout;         //Lanpoko tenperatura gordetzeko float gehitu
+float altitudout;             //Kanpoko altuera gordetzeko float gehitu
+float altueraoutz = 0;        //Kanpoko altuera zaharra gordetzeko float gehitu. Honekin, altuera diferentzia kalkulatu daiteke
+float abiaduraout = 0;        //Kanpoko abiadura gordetzeko float gehitu
+float Vout =0;                //Oxigeno sentsorearen balioa gordetzeko float gehitu
+int calibrateO2 = 93;         //Oxigeno sentsorea kalibratzeko float gehitu
+SoftwareSerial sd(9, 10);     //SD. RX, TX
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
   // put your setup code here, to run once:
 
-  sd.begin(115200); // Inicia comunicacion serie SD
-  Serial.begin(19200); //Radio
-      if (!bmp1.begin(0x77)) {
-    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+  sd.begin(115200);        //SD-a abiarazi
+  Serial.begin(19200);     //APC-ak abiarazi
+  if (!bmp1.begin(0x77)) { //BMP Sentsorea abiarazi
+    Serial.println(F("Ez da BMP(1, barrukoa) aurkitu!"));
     while (1);
   }
-  if (!bmp2.begin(0x76)) {
-    Serial.println(F("Could not find a valid BMP280(2) sensor, check wiring!"));
+  if (!bmp2.begin(0x76)) { //BMP Sentsorea abiarazi
+    Serial.println(F("Ez da BMP(2, kanpokoa) aurkitu!"));
     while (1);
-  }// Inicia el sensor
-  calibrateO2 = analogRead(Vout); //Oxygen Sensor Calibrate
+  }
+  calibrateO2 = analogRead(Vout); //Oxigeno sentsorea kalibratu
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() {
   
-  //CREATE A STRING:
+  //String bat sortu:
   
   String stringOne;
 
-  //BMP IN READ
+  //BBarruko BMP irakurri
   
   presionin = bmp1.readPressure() / 100; //Presioa Irakurri
   temperaturain = bmp1.readTemperature();
   altuerainz = altitudin;
-  altitudin = bmp1.readAltitude (1015); // Ajustar con el valor local
-  //stringOne += F("Presioa(IN): ");
+  altitudin = bmp1.readAltitude (1015); //Ajustar con el valor local
   stringOne += String(presionin, 2);
   stringOne += F(",");
   stringOne += String(temperaturain, 2);
   stringOne += F(",");
   stringOne += String(altitudin, 2);
+  stringOne += F(",");
   denboraz = denbora;
   denbora = millis();
   denbora = denbora/1000;
-  stringOne += F(",");
   stringOne += String(denbora, 2);
-  abiadurain = (altitudin - altuerainz)/(denbora - denboraz);
   stringOne += F(",");
+  abiadurain = (altitudin - altuerainz)/(denbora - denboraz);
   stringOne += String(abiadurain, 2);
+  stringOne += F(",");
   
-  //BMP OUT
+  //Kanpoko BMP irakurri
   
   presionout = bmp2.readPressure() / 100; //Presioa Irakurri
   temperaturaout = bmp2.readTemperature();
   altueraoutz = altitudout;
-  altitudout = bmp2.readAltitude (1015); // Ajustar con el valor local
-  stringOne += F(",");
+  altitudout = bmp2.readAltitude (1015); //Ajustar con el valor local
   stringOne += String(presionout, 2);
   stringOne += F(",");
   stringOne += String(temperaturaout, 2);
   stringOne += F(",");
   stringOne += String(altitudout, 2);
+  stringOne += F(",");
   denboraz = denbora;
   denbora = millis();
   denbora = denbora/1000;
-  stringOne += F(",");
   stringOne += String(denbora, 2);
+  stringOne += F(",");
   abiaduraout = (altitudout - altueraoutz)/(denbora - denboraz);
-  stringOne += F(",");
   stringOne += String(abiaduraout, 2);
-  
-  //OXYGEN
-
   stringOne += F(",");
-  Vout = analogRead(A0); //Oxygen read
-  stringOne += String(Vout, 2); //Oxygen V print
-  Vout = map(Vout, 0, calibrateO2, 0, 208); //Map to calibrated value
-  Vout = Vout/10; //Oxygen to decimals
-  stringOne += String(Vout, 2); //Oxygen mapped print
   
-  //I VALUE
+  //Oxigenoa irakurri
+
+  Vout = analogRead(A0); //Oxigenoa irakurri
+  stringOne += String(Vout, 2); //Oxigenoaren sentsorearen sarrera bidali
+  Vout = map(Vout, 0, calibrateO2, 0, 208); //Kalibratutako baliora mapeatu
+  Vout = Vout/10; //Oxigenoa dezimaletara
+  stringOne += String(Vout, 2); //Oxigenoa bidali
+  stringOne += F(",");
+  
+  //Identifikadorea kalkulatu +1
   
   i=i+1;
-  stringOne += F(",");
   stringOne += String(i, 2);
 
-  //STORAGE AND SEND
+  //SD-an gorde, eta bidali
   
   sd.listen();
   sd.println(stringOne);
