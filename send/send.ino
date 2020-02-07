@@ -60,7 +60,7 @@ void loop() {
   
   String stringOne;
 
-  //BBarruko BMP irakurri
+  //Barruko BMP irakurri
   
   presionin = bmp1.readPressure() / 100; //Presioa Irakurri
   temperaturain = bmp1.readTemperature();
